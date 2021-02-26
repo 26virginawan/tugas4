@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'widget/Convert.dart';
+import 'widget/Input.dart';
+import 'widget/Result.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  // This widget is the root of your application.
   @override
-  MyAppState createState() => MyAppState();
+  _MyAppState createState() => _MyAppState();
 }
 
-class MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> {
   double _inputUser = 0;
-  double _kelvin = 0;
-  double _reamur = 0;
-  final inputController = TextEditingController();
 
-  void perhitunganSuhu() {
+  double _kelvin = 0;
+
+  double _reamur = 0;
+
+  TextEditingController inputUserController = TextEditingController();
+
+  void _konversi() {
     setState(() {
-      _inputUser = double.parse(inputController.text);
+      _inputUser = double.parse(inputUserController.text);
       _kelvin = _inputUser + 273;
       _reamur = (4 / 5) * _inputUser;
     });
@@ -27,7 +34,6 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -40,74 +46,11 @@ class MyAppState extends State<MyApp> {
         body: Container(
           margin: EdgeInsets.all(8),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextFormField(
-                controller: inputController,
-                decoration:
-                    InputDecoration(hintText: 'Masukkan Suhu Dalam Celcius'),
-                keyboardType: TextInputType.numberWithOptions(
-                  decimal: true,
-                  signed: false,
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          child: Text('Suhu dalam Kelvin',
-                              textAlign: TextAlign.center),
-                        ),
-                        Container(
-                          child: Text(
-                            '$_kelvin',
-                            style: TextStyle(fontSize: 30.0),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          child: Text('Suhu dalam Reamour',
-                              textAlign: TextAlign.center),
-                        ),
-                        Container(
-                          child: Text(
-                            '$_reamur',
-                            style: TextStyle(fontSize: 30.0),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              RaisedButton(
-                onPressed: () {
-                  setState(() {
-                    _inputUser = double.parse(inputController.text);
-                    _kelvin = _inputUser + 273;
-                    _reamur = (4 / 5) * _inputUser;
-                  });
-                },
-                textColor: Colors.white,
-                color: Colors.blue,
-                child: Container(
-                  height: 50,
-                  width: 510,
-                  alignment: Alignment.center,
-                  child: Text("Konversi Suhu", style: TextStyle(fontSize: 17)),
-                ),
-              ),
+              Input(inputUserController: inputUserController),
+              Result(kelvin: _kelvin, reamur: _reamur),
+              Convert(konvertHandler: _konversi),
             ],
           ),
         ),
