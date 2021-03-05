@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'widget/Convert.dart';
 import 'widget/Input.dart';
 import 'widget/Result.dart';
+import 'widget/RiwayatKonversi.dart';
+import 'widget/DropDownKonversi.dart';
 
 void main() {
   runApp(MyApp());
@@ -40,6 +42,13 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void dropdownOnChanged(String changeValue) {
+    setState(() {
+      _konversi();
+      _newValue = changeValue;
+    });
+  }
+
   var listItem = ["Kelvin", "Reamur"];
   List<String> listViewItem = List<String>();
 
@@ -61,21 +70,10 @@ class _MyAppState extends State<MyApp> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Input(inputUserController: inputUserController),
-              DropdownButton<String>(
-                items: listItem.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                value: _newValue,
-                onChanged: (String changeValue) {
-                  setState(() {
-                    _konversi();
-                    _newValue = changeValue;
-                  });
-                },
-              ),
+              DropdownKonversi(
+                  listItem: listItem,
+                  newValue: _newValue,
+                  dropdownOnChanged: dropdownOnChanged),
               Result(result: _result),
               Convert(konvertHandler: _konversi),
               Container(
@@ -86,16 +84,7 @@ class _MyAppState extends State<MyApp> {
                 ),
               ),
               Expanded(
-                child: ListView(
-                  children: listViewItem.map((String value) {
-                    return Container(
-                        margin: EdgeInsets.all(10),
-                        child: Text(
-                          value,
-                          style: TextStyle(fontSize: 15),
-                        ));
-                  }).toList(),
-                ),
+                child: RiwayatKonversi(listViewItem: listViewItem),
               ),
             ],
           ),
