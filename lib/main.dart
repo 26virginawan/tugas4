@@ -23,13 +23,25 @@ class _MyAppState extends State<MyApp> {
 
   TextEditingController inputUserController = TextEditingController();
 
+  String _newValue = "Kelvin";
+
+  double _result = 0;
+
   void _konversi() {
     setState(() {
       _inputUser = double.parse(inputUserController.text);
-      _kelvin = _inputUser + 273;
-      _reamur = (4 / 5) * _inputUser;
+      if (_newValue == "Kelvin") {
+        _result = _inputUser + 273;
+        listViewItem.add("kelvin: " + '$_result');
+      } else {
+        _result = (4 / 5) * _inputUser;
+        listViewItem.add("reamur: " + '$_result');
+      }
     });
   }
+
+  var listItem = ["Kelvin", "Reamur"];
+  List<String> listViewItem = List<String>();
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +61,42 @@ class _MyAppState extends State<MyApp> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Input(inputUserController: inputUserController),
-              Result(kelvin: _kelvin, reamur: _reamur),
+              DropdownButton<String>(
+                items: listItem.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                value: _newValue,
+                onChanged: (String changeValue) {
+                  setState(() {
+                    _konversi();
+                    _newValue = changeValue;
+                  });
+                },
+              ),
+              Result(result: _result),
               Convert(konvertHandler: _konversi),
+              Container(
+                margin: EdgeInsets.only(top: 10, bottom: 10),
+                child: Text(
+                  "Riwayat Konversi",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                  children: listViewItem.map((String value) {
+                    return Container(
+                        margin: EdgeInsets.all(10),
+                        child: Text(
+                          value,
+                          style: TextStyle(fontSize: 15),
+                        ));
+                  }).toList(),
+                ),
+              ),
             ],
           ),
         ),
